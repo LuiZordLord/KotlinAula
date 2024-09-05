@@ -52,6 +52,13 @@ class MainActivity : AppCompatActivity() {
 
 
         }
+        
+        listViewTarefas.setOnItemLongClickListener{ _,_, position,_ ->
+            val removeTarefa = listaDeTarefas.removeAt(position)
+            adapter.notifyDataSetChanged()
+            Toast.makeText(this, "Tarefa removida", Toast.LENGTH_LONG).show()
+            true
+        }
 
     }
 }
