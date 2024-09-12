@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
             if (valorConta.isNotEmpty() && valorGorjeta.isNotEmpty()) {
                 val porcentagemGorjeta = valorConta.toDouble() * (valorGorjeta.toDouble() / 100)
                 val contaFinal = valorConta.toDouble() + porcentagemGorjeta
-                resultado.text = "$contaFinal"
+                resultado.text = "Valor da Gorjeta: $valorGorjeta . Valor da Conta com Gorjeta: $contaFinal"
             }else{
                 resultado.text = "Informe ambos os valores"
             }
