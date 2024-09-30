@@ -1,173 +1,149 @@
-package br.unipar.exemploadapter
+Main activity:
+package com.verdejar
 
 import android.os.Bundle
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ListView
-import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import androidx.recyclerview.widget.LinearLayoutManager
+import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val listaDeTarefas = mutableListOf<Tarefa>()
+    private val plantList = mutableListOf<Plant>()
+    private val plantAdapter = PlantAdapter(plantList)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        
+        recyclerViewPlants.layoutManager = LinearLayoutManager(this)
+        recyclerViewPlants.adapter = plantAdapter
+
+        btnAddPlant.setOnClickListener {
+            val name = etPlantName.text.toString()
+            val date = etPlantDate.text.toString()
+            val careLevel = spinnerCareLevel.selectedItem.toString()
+
+            plantList.add(Plant(name, date, careLevel))
+            plantAdapter.notifyDataSetChanged()
+
+            tvTotalPlants.text = "Total de plantas: ${plantList.size}"
         }
-
-        val edTarefa = findViewById<EditText>(R.id.edAgua)
-        val btnCadastrar = findViewById<Button>(R.id.btnCadastrar)
-        val listViewTarefas = findViewById<ListView>(R.id.listViewTarefas)
-
-
-        //Criando uma ponto usando o layout do android
-
-        /*adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, listaDeTarefas)*/
-
-        val adapter = TarefaAdapter(this, listaDeTarefas)
-
-
-        //Vinculando o meu adaptar com a minha view
-        listViewTarefas.adapter = adapter
-
-        btnCadastrar.setOnClickListener {
-
-            val descricaoTarefa = edTarefa.text.toString()
-            val dataAtual = SimpleDateFormat("dd/mm/yyyy", Locale.getDefault()).format(Date())
-
-            if(descricaoTarefa.isNotEmpty()){
-
-                val novaTarefa = Tarefa(descricaoTarefa, dataAtual, false)
-
-                listaDeTarefas.add(novaTarefa)
-                adapter.notifyDataSetChanged()
-
-                Toast.makeText(this, "Tarefa: ${descricaoTarefa}", Toast.LENGTH_LONG).show()
-
-                edTarefa.text.clear()
-
-            }
-
-
-        }
-
-        listViewTarefas.setOnItemLongClickListener{ _,_, position,_ ->
-            val removeTarefa = listaDeTarefas.removeAt(position)
-            adapter.notifyDataSetChanged()
-            Toast.makeText(this, "Tarefa removida", Toast.LENGTH_LONG).show()
-            true
-        }
-
     }
 }
 
 /////
 
+Plant.kt:
+
+package com.example.verdejar
+
+data class Plant(val name: String, val date: String, val careLevel: String)
+
+/////
+
+PlantAdapter.kt:
+
+package com.example.verdejar
+
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.plant_item.view.*
+
+class PlantAdapter(private val plantList: List<Plant>) : RecyclerView.Adapter<PlantAdapter.PlantViewHolder>() {
+
+    class PlantViewHolder(val view: android.view.View) : RecyclerView.ViewHolder(view)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlantViewHolder {
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.plant_item, parent, false)
+        return PlantViewHolder(view)
+    }
+
+    override fun onBindViewHolder(holder: PlantViewHolder, position: Int) {
+        val plant = plantList[position]
+        holder.view.tvPlantName.text = plant.name
+        holder.view.tvPlantDate.text = plant.date
+        holder.view.tvCareLevel.text = plant.careLevel
+    }
+
+    override fun getItemCount() = plantList.size
+}
+
+/////
+
+activity_main.xml:
+
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:orientation="vertical"
+    android:padding="16dp">
 
-    <LinearLayout
-        android:layout_width="409dp"
-        android:layout_height="729dp"
-        android:orientation="vertical"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
+    <TextView
+        android:id="@+id/tvTotalPlants"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Total de plantas: 0"
+        android:textSize="18sp" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nome da Planta:"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+    <EditText
+        android:id="@+id/etPlantName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Nome da planta" />
 
-        <EditText
-            android:id="@+id/edAgua"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Planta"
-            android:inputType="text" />
+    <EditText
+        android:id="@+id/etPlantDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Data de plantio" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Data de Plantio:"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+    <Spinner
+        android:id="@+id/spinnerCareLevel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/care_levels" />
 
-        <EditText
-            android:id="@+id/edAgua"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Data"
-            android:inputType="text" />
+    <Button
+        android:id="@+id/btnAddPlant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Adicionar Planta" />
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Nível de Cuidado"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewPlants"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+</LinearLayout>
 
-        <EditText
-            android:id="@+id/edAgua"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Baixo, Médio, Alto"
-            android:inputType="text" />
+/////
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Quantidade de Água"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+Planta_item.xml:
 
-        <EditText
-            android:id="@+id/edAgua"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Água"
-            android:inputType="text" />
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="8dp">
 
-        <Button
-            android:id="@+id/btnCadastrar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="50sp"
-            android:layout_marginTop="10sp"
-            android:layout_marginRight="50sp"
-            android:layout_marginBottom="10sp"
-            android:text="Cadastrar" />
+    <TextView
+        android:id="@+id/tvPlantName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nome da Planta" />
 
-        <ListView
-            android:id="@+id/listViewTarefas"
-            android:layout_width="match_parent"
-            android:layout_height="255dp" />
-    </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/tvPlantDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Data de Plantio" />
+
+    <TextView
+        android:id="@+id/tvCareLevel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nível de Cuidado" />
+</LinearLayout>
