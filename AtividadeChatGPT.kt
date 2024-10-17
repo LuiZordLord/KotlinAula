@@ -19,11 +19,12 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
-
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+        
 </LinearLayout>
 
-///// 
+/////
 
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -46,7 +47,7 @@
 
 </LinearLayout>
 
-  /////
+/////
 
 package com.example.recyclerviewapp
 
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: MyAdapter
     private lateinit var inputField: EditText
     private lateinit var addButton: Button
-    private var itemList: List<String> = ArrayList()
+    private var itemList: MutableList<String> = ArrayList() // Corrigido: MutableList para poder modificar a lista
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,7 +90,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun addItem(item: String) {
         itemList.add(item)
-        adapter.notifyItemInserted(itemList.size - 1)
+        adapter.notifyItemInserted(itemList.size - 1) // Corrigido para usar o adapter
     }
 }
 
@@ -105,7 +106,7 @@ import android.widget.Button
 import androidx.recyclerview.widget.RecyclerView
 import com.example.recyclerviewapp.R
 
-class MyAdapter(private var itemList: List<String>) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
+class MyAdapter(private var itemList: MutableList<String>) : RecyclerView.Adapter<MyAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textViewItem: TextView = itemView.findViewById(R.id.textViewItem)
@@ -124,6 +125,7 @@ class MyAdapter(private var itemList: List<String>) : RecyclerView.Adapter<MyAda
         holder.removeButton.setOnClickListener {
             itemList.removeAt(position)
             notifyItemRemoved(position)
+            notifyItemRangeChanged(position, itemList.size) // Corrigido: Notificar que os itens subsequentes mudaram
         }
     }
 
