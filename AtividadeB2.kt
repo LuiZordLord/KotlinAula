@@ -10,7 +10,7 @@ o app também oferece a opção de levar o seu pet para essa aventura interplane
 
 /////
 
-package atividadeb2
+package Atividadeb2
 
 import android.content.Intent
 import android.os.Bundle
@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
 
 /////
 
-  package com.example.yourapp // Altere para o nome do seu pacote
+  package Atividadeb2
 
 import android.os.Bundle
 import android.widget.Button
@@ -75,17 +75,14 @@ class DetailsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_details)
 
-        // Recebe os detalhes passados pela MainActivity
         val detailText: String? = intent.getStringExtra("DETAIL_KEY")
 
-        // Exibe os detalhes no TextView
         val textView: TextView = findViewById(R.id.textViewDetail)
         textView.text = detailText ?: "Nenhum detalhe disponível"
 
-        // Botão de voltar para a tela anterior
         val btnBack: Button = findViewById(R.id.btnBack)
         btnBack.setOnClickListener {
-            finish()  // Finaliza a Activity atual
+            finish()
         }
     }
 }
@@ -116,7 +113,7 @@ class DetailsActivity : AppCompatActivity() {
 
 /////
 
-package com.example.yourapp // Altere para o nome do seu pacote
+package Atividadeb2
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
