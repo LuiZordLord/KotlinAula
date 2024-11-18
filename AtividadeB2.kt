@@ -4,7 +4,7 @@ será um app com uma tela para login com e-mail e senha, uma tela principal a qu
 logo após selecionar irá para uma tela de finalização qual finalizará o pedido de sua passagem para Marte. 
 
 Escopo Refinado:
-O aplicativo foi projetado para oferecer uma experiência intuitiva e prática, composta por quatro telas principais que permitem ao usuário criar uma nova conta,
+O aplicativo foi projetado para oferecer uma experiência intuitiva e prática, composta por telas que permitem ao usuário criar uma nova conta,
 acessar sua conta existente e selecionar as passagens de maneira rápida e eficiente. Desenvolvido especialmente para aqueles que sonham em viajar para Marte,
 o app também oferece a opção de levar o seu pet para essa aventura interplanetária, garantindo uma jornada única e repleta de comodidade para todos os membros da família.
 
